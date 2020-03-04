@@ -1,0 +1,38 @@
+version: '3.4'
+
+services :
+    tags-api:
+        build:
+            context: ./com_cards
+        volumes: 
+            - ./com_cards:/usr/src/app
+        expose: 
+            - 5000
+        ports: 
+            - 5000:80
+
+    tags-client:
+        build:
+            context: ./com_client
+        volumes: 
+            - ./com_client:/app
+        expose: 
+            - 3000
+        ports: 
+            - 3000:3000
+        depends_on: 
+            - tags-api
+        links:
+            - tags-api
+    
+    tags-db:
+        image: "postgres"
+        container_name: "com_database"
+        env_file: 
+            - database.env
+        ports:
+            - "54320:5432"
+        volumes:
+            - com_dbdata:/var/lib/postgresql/data
+volumes:
+    com_dbdata:
